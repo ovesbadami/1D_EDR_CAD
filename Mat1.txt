@@ -1,0 +1,6 @@
+effective_mass:0.2 0.2;
+meDOS:0 0;
+valley_degeneracy:2 4;
+mhDOS:0;
+permittivity:6.9;
+deltaEc:0;
