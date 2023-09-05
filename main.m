@@ -1,6 +1,6 @@
 clc;
 clear ;
-%close all;
+close all;
 
 Directory='C:\Users\ovesb\Desktop\1D_SchPoiSolver\';
 
@@ -37,9 +37,9 @@ for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.M
         Silo.p = p_;
         Silo.n = n_;
         
-    %    printf("%d %f %f %f \n", iteration, ErrorV(iteration), ErrorN(iteration), ErrorP(iteration));
+        printf("%d %f %f %f \n", iteration, ErrorV(iteration), ErrorN(iteration), ErrorP(iteration));
            
-        if(ErrorV(iteration)<0.005)
+        if(ErrorV(iteration)<0.0005)
             printf("Convegence Reached.\n")
             break;
         end

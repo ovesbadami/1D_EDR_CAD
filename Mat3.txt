@@ -3,4 +3,7 @@ meDOS:0 0;
 valley_degeneracy:2 4;
 mhDOS:0;
 permittivity:6.9;
-deltaEc:0.0;
+bandgap:8.0;
+deltaEc:3.1;
+Doping_NA:0.0;
+Doping_ND:0.0;
