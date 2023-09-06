@@ -1,4 +1,4 @@
-function [Sort_Eigen_Energies,Sort_Eigen_Vectors, Ec]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo)
+function [Sort_Eigen_Energies,Sort_Eigen_Vectors, BandEdge]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo, CarrierType)
 
 to=-((Global_cons.hbar.^2)./(2.*(Mesh_cons.Spatial_distance.^2)));
 
@@ -12,8 +12,13 @@ for Valley=1:1:Sims_Constant.NoOfValleys
   mi = Material_cons.effective_mass_(Valley, Index);
   Index = Mesh.Material(i+1);
   mip1 = Material_cons.effective_mass_(Valley, Index);
-  U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
-  Ec(i) = U/Global_cons.Electron_charge;
+  if strcmp(CarrierType,'electron')
+      U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+  elseif strcmp(CarrierType,'hole')
+      U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index)) - Material_cons.bandgap(Index);
+      U = -U;
+  endif
+  BandEdge(i) = U/Global_cons.Electron_charge;
   HAMILTONIAN_MATRIX(i,i)   = -2.*to/((mip1+mi)*0.5) + U;
   HAMILTONIAN_MATRIX(i,i+1) = +1.*to/((mip1+mi)*0.5);
 
@@ -29,9 +34,15 @@ for Valley=1:1:Sims_Constant.NoOfValleys
       HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
 
       Index=Mesh.Material(i);
-      U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+      if strcmp(CarrierType,'electron')
+          U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+      elseif strcmp(CarrierType,'hole')
+          U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index)) - Material_cons.bandgap(Index);
+          U = -U;
+      endif
+
       HAMILTONIAN_MATRIX(i,i)   = -(1.*to/((mip1+mi)*0.5)+1.*to/((mi+mim1)*0.5)) + U;
-      Ec(i) = U/Global_cons.Electron_charge;
+      BandEdge(i) = U/Global_cons.Electron_charge;
       Index=Mesh.Material(i+1);
       HAMILTONIAN_MATRIX(i,i+1) = +1.*to/((mip1+mi)*0.5);
   end
@@ -44,9 +55,15 @@ for Valley=1:1:Sims_Constant.NoOfValleys
   mim1 = Material_cons.effective_mass_(Valley, Index); 
   HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
   Index=Mesh.Material(i);
-  U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+  if strcmp(CarrierType,'electron')
+      U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+  elseif strcmp(CarrierType,'hole')
+      U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index)) - Material_cons.bandgap(Index);
+      U = -U;
+  endif
+
   HAMILTONIAN_MATRIX(i,i)   = -2.*to/((mi+mim1)*0.5) + U;
-  Ec(i) = U/Global_cons.Electron_charge;
+  BandEdge(i) = U/Global_cons.Electron_charge;
   [EV,EE]=eigs(HAMILTONIAN_MATRIX,Sims_Constant.NoOfEigEnePerValley,'SM');
 
   for j=1:Sims_Constant.NoOfEigEnePerValley

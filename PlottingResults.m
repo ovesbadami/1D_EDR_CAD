@@ -3,11 +3,11 @@ close all
 
 dx = Mesh_cons.Spatial_distance;
 x = dx*(1:1:Mesh.Number_Mesh_point)*(1E+9);
-for i=1:1:Mesh.Number_Mesh_point
-  Index = Mesh.Material(i);
-  Ec(i) = -Silo.V(i) + Material_cons.delta_Ec_(Index);
-  
-endfor
+##for i=1:1:Mesh.Number_Mesh_point
+##  Index = Mesh.Material(i);
+##  Ec(i) = -Silo.V(i) + Material_cons.delta_Ec_(Index);
+##  
+##endfor
 
 
 grid on
@@ -37,7 +37,20 @@ EE5(1:Mesh.Number_Mesh_point) = Silo.EigenEnergy(1,5);
 hold on; plot(x,EE1,'--','linewidth', 3); plot(x,EE2,'--','linewidth', 3)
 plot(x,EE3,'--','linewidth', 3); plot(x,EE4,'--','linewidth', 3)
 plot(x,EE5,'--','linewidth', 3);
-ylabel('Conduction Band edge [eV]')
+
+
+plot(x,Ev,'linewidth', 3);
+EE1(1:Mesh.Number_Mesh_point) = Silo.holeEigenEnergy(1,1);
+EE2(1:Mesh.Number_Mesh_point) = Silo.holeEigenEnergy(1,2);
+EE3(1:Mesh.Number_Mesh_point) = Silo.holeEigenEnergy(1,3);
+EE4(1:Mesh.Number_Mesh_point) = Silo.holeEigenEnergy(1,4);
+EE5(1:Mesh.Number_Mesh_point) = Silo.holeEigenEnergy(1,5);
+hold on; plot(x,EE1,'--','linewidth', 3); plot(x,EE2,'--','linewidth', 3)
+plot(x,EE3,'--','linewidth', 3); plot(x,EE4,'--','linewidth', 3)
+plot(x,EE5,'--','linewidth', 3);
+
+
+ylabel('Band edge [eV]')
 xlabel('Position [nm]')
 axis ([0 x(end) 0 Silo.EigenEnergy(1,6);] )
 %axis ("tic", "tight");

@@ -18,19 +18,29 @@ v_ = zeros(1,Mesh.Number_Mesh_point);
 
 for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.MaxGateBias
     Silo.V(1) = GateBias+Device_param.WFDiff; 
-    Silo.V(end) = GateBias+Device_param.WFDiff;
+    Silo.V(end) = Device_param.BackGateBias+Device_param.WFDiff;
    
     for iteration=1:1:500
         [v_] = POISSON_SOLVER(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
         ErrorV(iteration) = max(abs(Silo.V-v_))/Sims_Constant.Damping;
         Silo.V = v_;
 
-        if (Sims_Constant.QuantumCorrection == 1) 
-            [Sort_Eigen_Energies,Sort_Eigen_Vectors, Ec]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
+        if (Sims_Constant.eQuantumCorrection == 1)
+            CarrierType = 'electron';
+            [Sort_Eigen_Energies,Sort_Eigen_Vectors, Ec]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo, CarrierType);
             Silo.EigenEnergy = Sort_Eigen_Energies;
             Silo.EigenVector = Sort_Eigen_Vectors;
         end
-
+        
+        Sims_Constant.hQuantumCorrection = 1
+        if (Sims_Constant.hQuantumCorrection == 1)
+            CarrierType = 'hole';
+            [Sort_Eigen_Energies,Sort_Eigen_Vectors, Ev]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo, CarrierType);
+            Ev = -Ev;  
+            Silo.holeEigenEnergy = -Sort_Eigen_Energies;
+            Silo.holeEigenVector = Sort_Eigen_Vectors;
+        end
+        
         [n_,p_,n2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);    
         ErrorN(iteration) = max(abs((Silo.n-n_))./n_);
         ErrorP(iteration) = max(abs((Silo.p-p_))./p_); 

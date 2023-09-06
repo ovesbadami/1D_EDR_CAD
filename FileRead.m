@@ -1,6 +1,9 @@
 function [Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant]=FileRead(Directory)
 
 
+Sims_Constant.eQuantumCorrection = 0;
+Sims_Constant.hQuantumCorrection = 0;
+
 
 FileName = strcat(Directory,'\','InputFile.txt')
 fid=fopen(FileName,'r');
@@ -28,8 +31,8 @@ for i=1:num_of_lines,
         Global_cons.Free_permittivity = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"DAMPING")
         Sims_Constant.Damping = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"QUANTUM_CORRECTION")
-        Sims_Constant.QuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"eQUANTUM_CORRECTION")
+        Sims_Constant.eQuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_OF_VALLEYS")
         Sims_Constant.NoOfValleys = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_EIGEN_PER_VALLEY")
@@ -41,6 +44,8 @@ for i=1:num_of_lines,
         Device_param.MinGateBias = str2double(temp(1,1));
         Device_param.GateBiasStep = str2double(temp(1,2));
         Device_param.MaxGateBias = str2double(temp(1,3));
+    elseif strcmp(txt(indexS:IndexM-1),"BACK_GATE_BIAS")
+        Device_param.BackGateBias = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"WORKFUNCTION_DIFF")
         Device_param.WFDiff = str2double(txt(IndexM+1:IndexE-1));
 ##    elseif strcmp(txt(indexS:IndexM-1),"L1_m")
@@ -54,7 +59,7 @@ for i=1:num_of_lines,
         Device_param.NoOfDomains = str2double(temp(1,1));
         Device_param.Region_ = zeros(Device_param.NoOfDomains, 1);    
         for k = 1:1:Device_param.NoOfDomains
-          Device_param.Region_(k) = str2double(temp(1,k+1))
+          Device_param.Region_(k) = str2double(temp(1,k+1));
         endfor
     elseif strcmp(txt(indexS:IndexM-1),"material_type")
         Device_param.MatType = txt(IndexM+1:IndexE-1);

@@ -1,10 +1,10 @@
 function Mesh=Make_mesh(Mesh_cons,Device_param)
 
-Mesh.Total_length=sum(Device_param.Region_)%(1)+Device_param.Region_(2)+Device_param.Region_(3);
+Mesh.Total_length=sum(Device_param.Region_);%(1)+Device_param.Region_(2)+Device_param.Region_(3);
 
 Mesh.Number_Mesh_point=single(Mesh.Total_length./Mesh_cons.Spatial_distance);
 
-Delta = 1E-12
+Delta = 1E-12;
 
 for i=1:Mesh.Number_Mesh_point
     Mesh.Width(i) = (i)*Mesh.Total_length/Mesh.Number_Mesh_point;

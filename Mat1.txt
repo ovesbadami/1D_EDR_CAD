@@ -6,5 +6,6 @@ mhDOS:0;
 permittivity:6.9;
 bandgap:8.0;
 deltaEc:3.1;
+deltaEv:3.1;
 Doping_NA:0.0;
 Doping_ND:0.0;
