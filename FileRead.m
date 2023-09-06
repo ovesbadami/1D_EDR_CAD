@@ -56,8 +56,9 @@ for i=1:num_of_lines,
         for k = 1:1:Device_param.NoOfDomains
           Device_param.Region_(k) = str2double(temp(1,k+1))
         endfor
+    elseif strcmp(txt(indexS:IndexM-1),"material_type")
+        Device_param.MatType = txt(IndexM+1:IndexE-1);
     endif
-
 endfor
 fclose (fid);
 

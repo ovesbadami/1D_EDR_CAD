@@ -1,3 +1,4 @@
+material_type:oxide;
 effective_mass:0.2 0.2;
 meDOS:0 0;
 valley_degeneracy:2 4;
