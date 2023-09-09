@@ -32,16 +32,15 @@ for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.M
             Silo.EigenVector = Sort_Eigen_Vectors;
         end
         
-        Sims_Constant.hQuantumCorrection = 1
         if (Sims_Constant.hQuantumCorrection == 1)
             CarrierType = 'hole';
             [Sort_Eigen_Energies,Sort_Eigen_Vectors, Ev]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo, CarrierType);
             Ev = -Ev;  
-            Silo.holeEigenEnergy = -Sort_Eigen_Energies;
-            Silo.holeEigenVector = Sort_Eigen_Vectors;
+            Silo.hEigenEnergy = -Sort_Eigen_Energies;
+            Silo.hEigenVector = Sort_Eigen_Vectors;
         end
         
-        [n_,p_,n2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);    
+        [n_, p_, n2D, p2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);    
         ErrorN(iteration) = max(abs((Silo.n-n_))./n_);
         ErrorP(iteration) = max(abs((Silo.p-p_))./p_); 
         Silo.p = p_;

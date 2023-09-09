@@ -33,6 +33,8 @@ for i=1:num_of_lines,
         Sims_Constant.Damping = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"eQUANTUM_CORRECTION")
         Sims_Constant.eQuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"hQUANTUM_CORRECTION")
+        Sims_Constant.hQuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_OF_VALLEYS")
         Sims_Constant.NoOfValleys = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_EIGEN_PER_VALLEY")
@@ -231,7 +233,10 @@ for i=1:1:3
                 Material_cons.meDOS_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
             end
         elseif strcmp(txt(indexS:IndexM-1),"mhDOS")
-                Material_cons.mhDOS_(i) = Global_cons.Free_electron_mass*str2double(txt(IndexM+1:IndexE-1));
+                temp = strsplit(txt(IndexM+1:IndexE-1));
+            for k=1:Sims_Constant.NoOfValleys
+                Material_cons.mhDOS_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
+            end
         elseif strcmp(txt(indexS:IndexM-1),"bandgap")
             Material_cons.bandgap(i) = Global_cons.Electron_charge*str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"valley_degeneracy")

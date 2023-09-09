@@ -2,7 +2,7 @@ material_type:oxide;
 effective_mass:0.2 0.2;
 meDOS:0 0;
 valley_degeneracy:2 4;
-mhDOS:0;
+mhDOS:0 0;
 permittivity:6.9;
 bandgap:8.0;
 deltaEc:3.1;
