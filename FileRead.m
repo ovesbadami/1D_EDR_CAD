@@ -16,7 +16,7 @@ for i=1:num_of_lines,
     indexS = 1;
     IndexM = index(txt,":");
     IndexE = index(txt,";");
-    
+
     if strcmp(txt(indexS:IndexM-1),"Temperature")
         Global_cons.TEMPERATURE = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"hbar")
@@ -59,7 +59,7 @@ for i=1:num_of_lines,
     elseif strcmp(txt(indexS:IndexM-1),"NO_OF_DOMAINS")
         temp = strsplit(txt(IndexM+1:IndexE-1));
         Device_param.NoOfDomains = str2double(temp(1,1));
-        Device_param.Region_ = zeros(Device_param.NoOfDomains, 1);    
+        Device_param.Region_ = zeros(Device_param.NoOfDomains, 1);
         for k = 1:1:Device_param.NoOfDomains
           Device_param.Region_(k) = str2double(temp(1,k+1));
         endfor
@@ -183,7 +183,7 @@ fclose (fid);
 ##            Material_cons.meDOS_(k,3) = Global_cons.Free_electron_mass*str2double(temp(1,k));
 ##        end
 ##    elseif strcmp(txt(indexS:IndexM-1),"mhDOS")
-##            Material_cons.mhDOS_(3) = Global_cons.Free_electron_mass*str2double(txt(IndexM+1:IndexE-1));    
+##            Material_cons.mhDOS_(3) = Global_cons.Free_electron_mass*str2double(txt(IndexM+1:IndexE-1));
 ##    elseif strcmp(txt(indexS:IndexM-1),"bandgap")
 ##        Material_cons.bandgap(3) = Global_cons.Electron_charge*str2double(txt(IndexM+1:IndexE-1));
 ##    elseif strcmp(txt(indexS:IndexM-1),"valley_degeneracy")
@@ -203,8 +203,8 @@ fclose (fid);
 ##fclose (fid);
 
 
-for i=1:1:3
-  
+for i=1:1:Device_param.NoOfDomains
+
     LocalFileName = strcat('Mat',num2str(i),'.txt')
     FileName = strcat(Directory,'\',LocalFileName)
     fid=fopen(FileName,'r');
@@ -223,6 +223,12 @@ for i=1:1:3
             for k=1:Sims_Constant.NoOfValleys
                 Material_cons.effective_mass_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
             end
+        elseif strcmp(txt(indexS:IndexM-1),"hole_effective_mass")
+            temp = strsplit(txt(IndexM+1:IndexE-1));
+            for k=1:Sims_Constant.NoOfValleys
+                Material_cons.hole_effective_mass_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
+            end
+
         elseif strcmp(txt(indexS:IndexM-1),"permittivity")
             Material_cons.permittivity_(i) = Global_cons.Free_permittivity *str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"deltaEc")
@@ -244,6 +250,11 @@ for i=1:1:3
             for k=1:Sims_Constant.NoOfValleys
                 Material_cons.valley_degeneracy(k,i) = str2double(temp(1,k));
             end
+        elseif strcmp(txt(indexS:IndexM-1),"hole_valley_degeneracy")
+            temp = strsplit(txt(IndexM+1:IndexE-1));
+            for k=1:Sims_Constant.NoOfValleys
+                Material_cons.hole_valley_degeneracy(k,i) = str2double(temp(1,k));
+            end
         elseif strcmp(txt(indexS:IndexM-1),"Doping_NA")
                 Material_cons.NA_(i) = str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"Doping_ND")
@@ -254,8 +265,8 @@ for i=1:1:3
     fclose (fid);
 
 endfor
-  
-  
+
+
 
 Global_cons.Ef=0;
 

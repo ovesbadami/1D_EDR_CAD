@@ -6,7 +6,7 @@ valley_degeneracy:2 4;
 
 hole_effective_mass:0.2 0.2;
 hole_valley_degeneracy:2 2;
-mhDOS:0 0;
+mhDOS:0.8 0.8;
 
 permittivity:6.9;
 

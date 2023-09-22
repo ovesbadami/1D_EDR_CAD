@@ -8,62 +8,73 @@ for Valley=1:1:Sims_Constant.NoOfValleys
 
   % First_row
   i = 1;
-  Index = Mesh.Material(i);
-  mi = Material_cons.effective_mass_(Valley, Index);
-  Index = Mesh.Material(i+1);
-  mip1 = Material_cons.effective_mass_(Valley, Index);
   if strcmp(CarrierType,'electron')
+      Index = Mesh.Material(i);
+      mi = Material_cons.effective_mass_(Valley, Index);
       U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+      Index = Mesh.Material(i+1);
+      mip1 = Material_cons.effective_mass_(Valley, Index);
   elseif strcmp(CarrierType,'hole')
+      Index = Mesh.Material(i);
+      mi = Material_cons.hole_effective_mass_(Valley, Index);
       U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index)) - Material_cons.bandgap(Index);
       U = -U;
+      Index = Mesh.Material(i+1);
+      mip1 = Material_cons.hole_effective_mass_(Valley, Index);
   endif
   BandEdge(i) = U/Global_cons.Electron_charge;
   HAMILTONIAN_MATRIX(i,i)   = -2.*to/((mip1+mi)*0.5) + U;
   HAMILTONIAN_MATRIX(i,i+1) = +1.*to/((mip1+mi)*0.5);
 
   for i=2:(Mesh.Number_Mesh_point-1)
-      Index=Mesh.Material(i-1);
-      mim1 = Material_cons.effective_mass_(Valley, Index); 
-      Index=Mesh.Material(i);
-      mi = Material_cons.effective_mass_(Valley, Index);
-      Index=Mesh.Material(i+1);
-      mip1 = Material_cons.effective_mass_(Valley, Index);
 
-      Index=Mesh.Material(i-1);
-      HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
-
-      Index=Mesh.Material(i);
       if strcmp(CarrierType,'electron')
+          Index=Mesh.Material(i-1);
+          mim1 = Material_cons.effective_mass_(Valley, Index);
+          Index=Mesh.Material(i);
+          mi = Material_cons.effective_mass_(Valley, Index);
           U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
-      elseif strcmp(CarrierType,'hole')
+          Index=Mesh.Material(i+1);
+          mip1 = Material_cons.effective_mass_(Valley, Index);
+      elseif  strcmp(CarrierType,'hole')
+          Index=Mesh.Material(i-1);
+          mim1 = Material_cons.hole_effective_mass_(Valley, Index);
+          Index=Mesh.Material(i);
+          mi = Material_cons.hole_effective_mass_(Valley, Index);
           U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index)) - Material_cons.bandgap(Index);
           U = -U;
+          Index=Mesh.Material(i+1);
+          mip1 = Material_cons.hole_effective_mass_(Valley, Index);
       endif
 
+      HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
       HAMILTONIAN_MATRIX(i,i)   = -(1.*to/((mip1+mi)*0.5)+1.*to/((mi+mim1)*0.5)) + U;
-      BandEdge(i) = U/Global_cons.Electron_charge;
-      Index=Mesh.Material(i+1);
       HAMILTONIAN_MATRIX(i,i+1) = +1.*to/((mip1+mi)*0.5);
+      BandEdge(i) = U/Global_cons.Electron_charge;
   end
 
   % Last_row
   i=(Mesh.Number_Mesh_point);
-  Index=Mesh.Material(i);
-  mi = Material_cons.effective_mass_(Valley, Index); 
-  Index=Mesh.Material(i-1);
-  mim1 = Material_cons.effective_mass_(Valley, Index); 
-  HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
-  Index=Mesh.Material(i);
-  if strcmp(CarrierType,'electron')
+
+   if strcmp(CarrierType,'electron')
+      Index = Mesh.Material(i);
+      mi = Material_cons.effective_mass_(Valley, Index);
       U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index));
+      Index = Mesh.Material(i-1);
+      mim1 = Material_cons.effective_mass_(Valley, Index);
   elseif strcmp(CarrierType,'hole')
+      Index = Mesh.Material(i);
+      mi = Material_cons.hole_effective_mass_(Valley, Index);
       U = Global_cons.Electron_charge*(-Silo.V(i) + Material_cons.delta_Ec_(Index)) - Material_cons.bandgap(Index);
       U = -U;
+      Index = Mesh.Material(i-1);
+      mim1 = Material_cons.hole_effective_mass_(Valley, Index);
   endif
 
+  HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
   HAMILTONIAN_MATRIX(i,i)   = -2.*to/((mi+mim1)*0.5) + U;
   BandEdge(i) = U/Global_cons.Electron_charge;
+
   [EV,EE]=eigs(HAMILTONIAN_MATRIX,Sims_Constant.NoOfEigEnePerValley,'SM');
 
   for j=1:Sims_Constant.NoOfEigEnePerValley
