@@ -10,7 +10,7 @@ if (Sims_Constant.eQuantumCorrection == 0 && Sims_Constant.hQuantumCorrection ==
 
        % if (Mesh.Material(i)>1 && Mesh.Material(i)<3)
             kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
-            Ec = -Global_cons.Electron_charge*v_(i);
+            Ec = -Global_cons.Electron_charge*v_(i) + Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
             Ev = Ec - Material_cons.bandgap(Index);
             NC3D = 2*((Material_cons.meDOS_(1,Mesh.Material(i))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
             NV3D = 2*((Material_cons.mhDOS_(1,Mesh.Material(i))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
@@ -24,12 +24,6 @@ if (Sims_Constant.eQuantumCorrection == 0 && Sims_Constant.hQuantumCorrection ==
             else
                 p_(i)=NV3D*(exp(-(Global_cons.Ef-Ev)/kBT));
             endif
-
-
-        %else
-        %    p_(i)=0.0;
-        %    n_(i)=0.0;
-        %end
     end
     n2D = 0;
     p2D = 0;
@@ -45,7 +39,6 @@ elseif (Sims_Constant.eQuantumCorrection == 1 && Sims_Constant.hQuantumCorrectio
             endif
         end
         meff_DoS(i,1) = meff_DoS(i,1)/Counter;
-%        printf("Effective Mass %d %d %f \n",i, Counter, meff_DoS(i,1)/9.1080e-31);
     end
 
     for i=1:Sims_Constant.NoOfValleys
@@ -75,7 +68,7 @@ elseif (Sims_Constant.eQuantumCorrection == 1 && Sims_Constant.hQuantumCorrectio
 %        if (Mesh.Material(i)>1 && Mesh.Material(i)<3)
             kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
             NV3D = 2*((Material_cons.mhDOS_(1,2)/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-            Ec = -Global_cons.Electron_charge*v_(i);
+            Ec = -Global_cons.Electron_charge*v_(i) + Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
             Ev = Ec - Material_cons.bandgap(Index);
 
             if (NV3D == 0)
@@ -131,7 +124,7 @@ elseif (Sims_Constant.hQuantumCorrection == 1 && Sims_Constant.eQuantumCorrectio
 %        if (Mesh.Material(i)>1 && Mesh.Material(i)<3)
             kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
             NC3D = 2*((Material_cons.meDOS_(1,2)/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-            Ec = -Global_cons.Electron_charge*v_(i);
+            Ec = -Global_cons.Electron_charge*v_(i)+ Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
 
             if (NC3D == 0)
                 n_(i)=0.0;

@@ -2,7 +2,7 @@ clc;
 clear ;
 close all;
 
-Directory='C:\Users\Mohamed\Desktop\1D_EDR_CAD-main';
+Directory='/home/kash/Desktop/1D_EDR_CAD-main/';
 
 %[Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant] = GLOBAL_CONSTANT_INPUT();
 

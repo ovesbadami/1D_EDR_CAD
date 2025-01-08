@@ -5,7 +5,7 @@ Sims_Constant.eQuantumCorrection = 0;
 Sims_Constant.hQuantumCorrection = 0;
 
 
-FileName = strcat(Directory,'\','InputFile.txt')
+FileName = strcat(Directory,'/','InputFile.txt')
 fid=fopen(FileName,'r');
 num_of_lines = fskipl(fid, Inf);
 fclose (fid);
@@ -69,144 +69,10 @@ for i=1:num_of_lines,
 endfor
 fclose (fid);
 
-##FileName = strcat(Directory,'\','Mat1.txt')
-##fid=fopen(FileName,'r');
-##num_of_lines = fskipl(fid, Inf);
-##fclose (fid);
-##
-##fid=fopen(FileName,'r');
-##for i=1:num_of_lines,
-##    txt = fgetl (fid);
-##    indexS = 1;
-##    IndexM = index(txt,":");
-##    IndexE = index(txt,";");
-##
-##    if strcmp(txt(indexS:IndexM-1),"effective_mass")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.effective_mass_(k,1) = Global_cons.Free_electron_mass*str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"permittivity")
-##        Material_cons.permittivity_(1) = Global_cons.Free_permittivity *str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"deltaEc")
-##        Material_cons.delta_Ec_(1) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"meDOS")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.meDOS_(k,1) = Global_cons.Free_electron_mass*str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"mhDOS")
-##            Material_cons.mhDOS_(1) = Global_cons.Free_electron_mass*str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"bandgap")
-##        Material_cons.bandgap(1) = Global_cons.Electron_charge*str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"valley_degeneracy")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.valley_degeneracy(k,1) = str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"Doping_NA")
-##            Material_cons.NA_(1) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"Doping_ND")
-##            Material_cons.ND_(1) = str2double(txt(IndexM+1:IndexE-1));
-##    endif
-##
-##endfor
-##fclose (fid);
-##
-##FileName = strcat(Directory,'\','Mat2.txt')
-##fid=fopen(FileName,'r');
-##num_of_lines = fskipl(fid, Inf);
-##fclose (fid);
-##
-##fid=fopen(FileName,'r');
-##for i=1:num_of_lines,
-##    txt = fgetl (fid);
-##    indexS = 1;
-##    IndexM = index(txt,":");
-##    IndexE = index(txt,";");
-##
-##    if strcmp(txt(indexS:IndexM-1),"effective_mass")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.effective_mass_(k,2) = Global_cons.Free_electron_mass*str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"permittivity")
-##        Material_cons.permittivity_(2) = Global_cons.Free_permittivity *str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"deltaEc")
-##        Material_cons.delta_Ec_(2) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"meDOS")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.meDOS_(k,2) = Global_cons.Free_electron_mass*str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"mhDOS")
-##            Material_cons.mhDOS_(2) = Global_cons.Free_electron_mass*str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"bandgap")
-##          Material_cons.bandgap(2) = Global_cons.Electron_charge*str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"valley_degeneracy")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.valley_degeneracy(k,2) = str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"Doping_NA")
-##            Material_cons.NA_(2) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"Doping_ND")
-##            Material_cons.ND_(2) = str2double(txt(IndexM+1:IndexE-1));
-##    endif
-##endfor
-##fclose (fid);
-##
-##FileName = strcat(Directory,'\','Mat3.txt')
-##fid=fopen(FileName,'r');
-##num_of_lines = fskipl(fid, Inf);
-##fclose (fid);
-##
-##fid=fopen(FileName,'r');
-##for i=1:num_of_lines,
-##    txt = fgetl (fid);
-##    indexS = 1;
-##    IndexM = index(txt,":");
-##    IndexE = index(txt,";");
-##
-##    if strcmp(txt(indexS:IndexM-1),"effective_mass")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.effective_mass_(k,3) = Global_cons.Free_electron_mass*str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"permittivity")
-##        Material_cons.permittivity_(3) = Global_cons.Free_permittivity *str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"deltaEc")
-##        Material_cons.delta_Ec_(3) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"meDOS")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.meDOS_(k,3) = Global_cons.Free_electron_mass*str2double(temp(1,k));
-##        end
-##    elseif strcmp(txt(indexS:IndexM-1),"mhDOS")
-##            Material_cons.mhDOS_(3) = Global_cons.Free_electron_mass*str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"bandgap")
-##        Material_cons.bandgap(3) = Global_cons.Electron_charge*str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"valley_degeneracy")
-##        temp = strsplit(txt(IndexM+1:IndexE-1));
-##        for k=1:Sims_Constant.NoOfValleys
-##            Material_cons.valley_degeneracy(k,3) = str2double(temp(1,k));
-##        end
-##        elseif strcmp(txt(indexS:IndexM-1),"Doping_NA")
-##            Material_cons.NA_(3) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"Doping_ND")
-##            Material_cons.ND_(3) = str2double(txt(IndexM+1:IndexE-1));
-##    endif
-##
-##
-##
-##endfor
-##fclose (fid);
-
-
 for i=1:1:Device_param.NoOfDomains
 
     LocalFileName = strcat('Mat',num2str(i),'.txt')
-    FileName = strcat(Directory,'\',LocalFileName)
+    FileName = strcat(Directory,'/',LocalFileName)
     fid=fopen(FileName,'r');
     num_of_lines = fskipl(fid, Inf);
     fclose (fid);
@@ -218,12 +84,12 @@ for i=1:1:Device_param.NoOfDomains
         IndexM = index(txt,":");
         IndexE = index(txt,";");
 
-        if strcmp(txt(indexS:IndexM-1),"effective_mass")
+        if strcmp(txt(indexS:IndexM-1),"effective_mass") % Confinement Masses
             temp = strsplit(txt(IndexM+1:IndexE-1));
             for k=1:Sims_Constant.NoOfValleys
                 Material_cons.effective_mass_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
             end
-        elseif strcmp(txt(indexS:IndexM-1),"hole_effective_mass")
+        elseif strcmp(txt(indexS:IndexM-1),"hole_effective_mass") % Confinement Masses
             temp = strsplit(txt(IndexM+1:IndexE-1));
             for k=1:Sims_Constant.NoOfValleys
                 Material_cons.hole_effective_mass_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));

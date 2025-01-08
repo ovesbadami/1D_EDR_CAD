@@ -11,7 +11,7 @@ mhDOS:0.8 0.8;
 permittivity:11.7;
 
 bandgap:1.1;
-deltaEc:0.5;
+deltaEc:0.0;
 
 Doping_NA:1E23;
 Doping_ND:0.0;

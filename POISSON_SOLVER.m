@@ -5,14 +5,14 @@ v_ = Silo.V;
 
 for i=1:Mesh.Number_Mesh_point
     Index=Mesh.Material(i);
-    if (Mesh.Material(i)>1&&Mesh.Material(i)<3)
+##    if (Mesh.Material(i)>1&&Mesh.Material(i)<3)
         kBT=(Global_cons.Boltzmann_cons*Global_cons.TEMPERATURE);
         rho(i)=Global_cons.Electron_charge*(Material_cons.ND_(Index)-Material_cons.NA_(Index)+Silo.p(i)-Silo.n(i));
         drho(i)=-(Global_cons.Electron_charge/kBT)*Global_cons.Electron_charge*(Silo.p(i)+Silo.n(i)); 
-    else
-        rho(i)=0;
-        drho(i)=0;
-    end
+##    else
+##        rho(i)=0;
+##        drho(i)=0;
+##    end
 end
 
 Jacobian_MATRIX=zeros(Mesh.Number_Mesh_point);
