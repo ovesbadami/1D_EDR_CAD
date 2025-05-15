@@ -1,17 +1,17 @@
 material_type:semiconductor;
 
-effective_mass:0.1 0.1;
-meDOS:0.19 0.42;
-valley_degeneracy:2 4;
+effective_mass:0.91 0.19 0.19;
+meDOS:0.19 0.42 0.42;
+valley_degeneracy:2 2 2;
 
-hole_effective_mass:0.2 0.2;
-hole_valley_degeneracy:2 2;
-mhDOS:0.8 0.8;
+hole_effective_mass:0.2 0.2 0.2;
+hole_valley_degeneracy:2 2 2;
+mhDOS:0.8 0.8 0.8;
 
 permittivity:11.7;
 
 bandgap:1.1;
 deltaEc:0.0;
 
-Doping_NA:1E23;
-Doping_ND:0.0;
+Doping_NA:3E23;
+Doping_ND:0;

@@ -18,12 +18,12 @@ if (Sims_Constant.eQuantumCorrection == 0 && Sims_Constant.hQuantumCorrection ==
                 n_(i) = 0;
             else
                 n_(i)=NC3D*(exp(-(Ec-Global_cons.Ef)/kBT));
-            endif
+            end
             if (NV3D == 0)
                 p_(i) = 0;
             else
                 p_(i)=NV3D*(exp(-(Global_cons.Ef-Ev)/kBT));
-            endif
+            end
     end
     n2D = 0;
     p2D = 0;
@@ -36,23 +36,23 @@ elseif (Sims_Constant.eQuantumCorrection == 1 && Sims_Constant.hQuantumCorrectio
             if (Material_cons.meDOS_(i,j) > 0)
                 meff_DoS(i,1) = meff_DoS(i,1) + Material_cons.meDOS_(i,j);
                 Counter = Counter + 1;
-            endif
+            end
         end
         meff_DoS(i,1) = meff_DoS(i,1)/Counter;
     end
 
     for i=1:Sims_Constant.NoOfValleys
-      for j=1:Sims_Constant.NoOfEigEnePerValley
-          kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
-          % Here we are just considering the density of states effective mass and valley_degeneracy of material 2
-          NC2D = Material_cons.valley_degeneracy(i,2)*(meff_DoS(i,1)/(pi*Global_cons.hbar^2));
-          n2D(i,j) = NC2D*kBT*log(1+exp((Global_cons.Ef-Global_cons.Electron_charge*Silo.EigenEnergy(i,j))/kBT));
+        for j=1:Sims_Constant.NoOfEigEnePerValley
+            kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
+            % Here we are just considering the density of states effective mass and valley_degeneracy of material 2
+            NC2D = Material_cons.valley_degeneracy(i,2)*(meff_DoS(i,1)/(pi*Global_cons.hbar^2));
+            n2D(i,j) = NC2D*kBT*log(1+exp((Global_cons.Ef-Global_cons.Electron_charge*Silo.EigenEnergy(i,j))/kBT));
         end
     end
 
     for i=1:Mesh.Number_Mesh_point
         n_(i) = 0.0;
-        if (Material_cons.meDOS_(1,Mesh.Material(i)) != 0)
+        if (Material_cons.meDOS_(1,Mesh.Material(i)) > 0)
             for j=1:Sims_Constant.NoOfValleys
                 for k=1:Sims_Constant.NoOfEigEnePerValley
                     n_(i) = n_(i) + n2D(j,k)*Silo.EigenVector(j,k,i)*Silo.EigenVector(j,k,i);
@@ -63,26 +63,26 @@ elseif (Sims_Constant.eQuantumCorrection == 1 && Sims_Constant.hQuantumCorrectio
         end
     end
 
-    for i=1:Mesh.Number_Mesh_point
+     for i=1:Mesh.Number_Mesh_point
+          p_(i)=0.0;
         Index=Mesh.Material(i);
 %        if (Mesh.Material(i)>1 && Mesh.Material(i)<3)
             kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
-            NV3D = 2*((Material_cons.mhDOS_(1,2)/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-            Ec = -Global_cons.Electron_charge*v_(i) + Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
-            Ev = Ec - Material_cons.bandgap(Index);
+            NV3D = 2*((Material_cons.mhDOS_(1,Index)/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
 
             if (NV3D == 0)
                 p_(i)=0.0;
             else
+                Ec = -Global_cons.Electron_charge*v_(i) + Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
+                Ev = Ec - Material_cons.bandgap(Index);
                 p_(i)=NV3D*(exp(-(Global_cons.Ef-Ev)/kBT));
-            endif
+            end
 %        else
 %           p_(i)=0.0;
 %        end
-    end
-
-    p2D = 0
-
+     end
+    p2D = 0;
+    
 elseif (Sims_Constant.hQuantumCorrection == 1 && Sims_Constant.eQuantumCorrection == 0)
     meff_DoS = zeros(Sims_Constant.NoOfValleys,1);
     for i=1:1:Sims_Constant.NoOfValleys
@@ -91,7 +91,7 @@ elseif (Sims_Constant.hQuantumCorrection == 1 && Sims_Constant.eQuantumCorrectio
             if (Material_cons.mhDOS_(i,j) > 0)
                 meff_DoS(i,1) = meff_DoS(i,1) + Material_cons.mhDOS_(i,j);
                 Counter = Counter + 1;
-            endif
+            end
         end
         meff_DoS(i,1) = meff_DoS(i,1)/Counter;
 %        printf("Effective Mass %d %d %f \n",i, Counter, meff_DoS(i,1)/9.1080e-31);
@@ -103,12 +103,12 @@ elseif (Sims_Constant.hQuantumCorrection == 1 && Sims_Constant.eQuantumCorrectio
           % Here we are just considering the density of states effective mass and valley_degeneracy of material 2
           NV2D = Material_cons.hole_valley_degeneracy(i,2)*(meff_DoS(i,1)/(pi*Global_cons.hbar^2));
           p2D(i,j) = NV2D*kBT*log(1+exp(-(Global_cons.Ef-Global_cons.Electron_charge*Silo.hEigenEnergy(i,j))/kBT));
-        end
+      end
     end
 
     for i=1:Mesh.Number_Mesh_point
         p_(i) = 0.0;
-        if (Material_cons.mhDOS_(1,Mesh.Material(i)) != 0)
+        if (Material_cons.mhDOS_(1,Mesh.Material(i)) > 0)
             for j=1:Sims_Constant.NoOfValleys
                 for k=1:Sims_Constant.NoOfEigEnePerValley
                     p_(i) = p_(i) + p2D(j,k)*Silo.hEigenVector(j,k,i)*Silo.hEigenVector(j,k,i);
@@ -130,15 +130,12 @@ elseif (Sims_Constant.hQuantumCorrection == 1 && Sims_Constant.eQuantumCorrectio
                 n_(i)=0.0;
             else
                 n_(i)=NC3D*(exp((Global_cons.Ef-Ec)/kBT));
-            endif
+            end
 %        else
 %           p_(i)=0.0;
 %        end
     end
-
     n2D = 0;
-
-
 elseif (Sims_Constant.hQuantumCorrection == 1 && Sims_Constant.eQuantumCorrection == 1)
     disp('error')
 end

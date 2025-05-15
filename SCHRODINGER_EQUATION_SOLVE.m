@@ -21,7 +21,7 @@ for Valley=1:1:Sims_Constant.NoOfValleys
       U = -U;
       Index = Mesh.Material(i+1);
       mip1 = Material_cons.hole_effective_mass_(Valley, Index);
-  endif
+  end
   BandEdge(i) = U/Global_cons.Electron_charge;
   HAMILTONIAN_MATRIX(i,i)   = -2.*to/((mip1+mi)*0.5) + U;
   HAMILTONIAN_MATRIX(i,i+1) = +1.*to/((mip1+mi)*0.5);
@@ -45,7 +45,7 @@ for Valley=1:1:Sims_Constant.NoOfValleys
           U = -U;
           Index=Mesh.Material(i+1);
           mip1 = Material_cons.hole_effective_mass_(Valley, Index);
-      endif
+      end
 
       HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
       HAMILTONIAN_MATRIX(i,i)   = -(1.*to/((mip1+mi)*0.5)+1.*to/((mi+mim1)*0.5)) + U;
@@ -69,28 +69,45 @@ for Valley=1:1:Sims_Constant.NoOfValleys
       U = -U;
       Index = Mesh.Material(i-1);
       mim1 = Material_cons.hole_effective_mass_(Valley, Index);
-  endif
+   end
 
   HAMILTONIAN_MATRIX(i,i-1) = +1.*to/((mi+mim1)*0.5);
   HAMILTONIAN_MATRIX(i,i)   = -2.*to/((mi+mim1)*0.5) + U;
   BandEdge(i) = U/Global_cons.Electron_charge;
 
+  
+  
   [EV,EE]=eigs(HAMILTONIAN_MATRIX,Sims_Constant.NoOfEigEnePerValley,'SM');
+%     [EV,EE]=eig(HAMILTONIAN_MATRIX);
+  
+
+  
+  Eigen_Vectors=EV;
+  Eigen_Energies=diag(EE./(Global_cons.Electron_charge));
+ 
+  [Sort_Eigen_Energies(Valley,:), Indices]=sort(Eigen_Energies);
+  Sort_Eigen_Vectors(Valley,:,:)= (Eigen_Vectors (:,Indices))';
+
+%   for i=1:2:Sims_Constant.NoOfEigEnePerValley
+%       if (abs(Sort_Eigen_Energies(Valley,i) - Sort_Eigen_Energies(Valley,i+1))<1E-3)
+%           EV1 = Sort_Eigen_Vectors(Valley,i,:);
+%           EV2 = Sort_Eigen_Vectors(Valley,i+1,:);
+%           Sort_Eigen_Vectors(Valley,i,:) = 0.5*(EV1+EV2);
+%           Sort_Eigen_Vectors(Valley,i+1,:) = 0.5*(EV1-EV2);
+%       end
+%   end
 
   for j=1:Sims_Constant.NoOfEigEnePerValley
       integ=0;
       for i=1:Mesh.Number_Mesh_point
-          integ=integ+EV(i,j)*EV(i,j)*Mesh_cons.Spatial_distance;
+          integ=integ+Sort_Eigen_Vectors(Valley,j,i)*Sort_Eigen_Vectors(Valley,j,i)*Mesh_cons.Spatial_distance;
       end
-      EV(:,j)=EV(:,j)./sqrt(integ);
+      Sort_Eigen_Vectors(Valley,j,:)=Sort_Eigen_Vectors(Valley,j,:)./sqrt(integ);
   end
 
-  Eigen_Vectors=EV;
-  Eigen_Energies=diag(EE./(Global_cons.Electron_charge));
-
-  [Sort_Eigen_Energies(Valley,:), Indices]=sort(Eigen_Energies);
-  Sort_Eigen_Vectors(Valley,:,:)= (Eigen_Vectors (:,Indices))';
-
-
-  end
 end
+
+end
+
+
+

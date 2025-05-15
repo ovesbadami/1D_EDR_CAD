@@ -1,17 +1,17 @@
-material_type:semiconductor;
+material_type:oxide;
 
-effective_mass:0.1 0.1;
-meDOS:0.19 0.42;
-valley_degeneracy:2 4;
+effective_mass:0.5 0.5 0.5;
+meDOS:0 0 0;
+valley_degeneracy:2 2 2;
 
-hole_effective_mass:0.2 0.2;
-hole_valley_degeneracy:2 2;
-mhDOS:0.8 0.8;
+hole_effective_mass:0.2 0.2 0.2;
+hole_valley_degeneracy:2 2 2;
+mhDOS:0 0 0;
 
-permittivity:11.7;
+permittivity:3.9;
 
-bandgap:1.1;
-deltaEc:0.0;
+bandgap:8.0;
+deltaEc:5.0;
 
-Doping_NA:1E23;
+Doping_NA:0.0;
 Doping_ND:0.0;

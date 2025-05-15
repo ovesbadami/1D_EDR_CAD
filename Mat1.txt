@@ -1,17 +1,17 @@
 material_type:oxide;
 
-effective_mass:0.2 0.2;
-meDOS:0 0;
-valley_degeneracy:2 4;
+effective_mass:0.5 0.5 0.5;
+meDOS:0 0 0;
+valley_degeneracy:2 2 2;
 
-hole_effective_mass:0.2 0.2;
-hole_valley_degeneracy:2 2;
-mhDOS:0 0;
+hole_effective_mass:0.2 0.2 0.2;
+hole_valley_degeneracy:2 2 2;
+mhDOS:0 0 0;
 
-permittivity:6.9;
+permittivity:3.9;
 
 bandgap:8.0;
-deltaEc:3.1;
+deltaEc:5.0;
 
 Doping_NA:0.0;
 Doping_ND:0.0;

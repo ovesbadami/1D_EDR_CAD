@@ -7,16 +7,29 @@ Sims_Constant.hQuantumCorrection = 0;
 
 FileName = strcat(Directory,'/','InputFile.txt')
 fid=fopen(FileName,'r');
-num_of_lines = fskipl(fid, Inf);
-fclose (fid);
+
+fseek(fid, 0, 'eof');
+fileSize = ftell(fid);
+frewind(fid);
+%# Read the whole file.
+data = fread(fid, fileSize, 'uint8');
+%# Count number of line-feeds and increase by one.
+num_of_lines = sum(data == 10) + 1;
+fclose(fid);
+
+
+%num_of_lines = fskipl(fid, Inf);
+%fclose (fid);
 
 fid=fopen(FileName,'r');
-for i=1:num_of_lines,
+for i=1:num_of_lines
     txt = fgetl (fid);
     indexS = 1;
-    IndexM = index(txt,":");
-    IndexE = index(txt,";");
-
+%     IndexM = index(txt,":");
+%     IndexE = index(txt,";");
+    IndexM = strfind(txt,":");
+    IndexE = strfind(txt,";");
+    
     if strcmp(txt(indexS:IndexM-1),"Temperature")
         Global_cons.TEMPERATURE = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"hbar")
@@ -50,40 +63,51 @@ for i=1:num_of_lines,
         Device_param.BackGateBias = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"WORKFUNCTION_DIFF")
         Device_param.WFDiff = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"L1_m")
-##        Device_param.Region_(1) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"L2_m")
-##        Device_param.Region_(2) = str2double(txt(IndexM+1:IndexE-1));
-##    elseif strcmp(txt(indexS:IndexM-1),"L3_m")
-##        Device_param.Region_(3) = str2double(txt(IndexM+1:IndexE-1));
+%    elseif strcmp(txt(indexS:IndexM-1),"L1_m")
+%        Device_param.Region_(1) = str2double(txt(IndexM+1:IndexE-1));
+%    elseif strcmp(txt(indexS:IndexM-1),"L2_m")
+%        Device_param.Region_(2) = str2double(txt(IndexM+1:IndexE-1));
+%    elseif strcmp(txt(indexS:IndexM-1),"L3_m")
+%        Device_param.Region_(3) = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_OF_DOMAINS")
         temp = strsplit(txt(IndexM+1:IndexE-1));
         Device_param.NoOfDomains = str2double(temp(1,1));
         Device_param.Region_ = zeros(Device_param.NoOfDomains, 1);
         for k = 1:1:Device_param.NoOfDomains
           Device_param.Region_(k) = str2double(temp(1,k+1));
-        endfor
+        end
     elseif strcmp(txt(indexS:IndexM-1),"material_type")
         Device_param.MatType = txt(IndexM+1:IndexE-1);
-    endif
-endfor
+    end
+end
 fclose (fid);
 
 for i=1:1:Device_param.NoOfDomains
 
-    LocalFileName = strcat('Mat',num2str(i),'.txt')
+    LocalFileName = strcat('Mat',num2str(i),'.txt');
     FileName = strcat(Directory,'/',LocalFileName)
     fid=fopen(FileName,'r');
-    num_of_lines = fskipl(fid, Inf);
-    fclose (fid);
+    %num_of_lines = fskipl(fid, Inf);
+    
+    fseek(fid, 0, 'eof');
+    fileSize = ftell(fid);
+    frewind(fid);
+    %# Read the whole file.
+    data = fread(fid, fileSize, 'uint8');
+    %# Count number of line-feeds and increase by one.
+    num_of_lines = sum(data == 10) + 1;
+    fclose(fid);
 
     fid=fopen(FileName,'r');
-    for j=1:num_of_lines,
+    for j=1:num_of_lines
         txt = fgetl (fid);
         indexS = 1;
-        IndexM = index(txt,":");
-        IndexE = index(txt,";");
-
+%         IndexM = index(txt,":");
+%         IndexE = index(txt,";");
+        IndexM = strfind(txt,":");
+        IndexE = strfind(txt,";");
+        
+        
         if strcmp(txt(indexS:IndexM-1),"effective_mass") % Confinement Masses
             temp = strsplit(txt(IndexM+1:IndexE-1));
             for k=1:Sims_Constant.NoOfValleys
@@ -125,12 +149,12 @@ for i=1:1:Device_param.NoOfDomains
                 Material_cons.NA_(i) = str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"Doping_ND")
                 Material_cons.ND_(i) = str2double(txt(IndexM+1:IndexE-1));
-        endif
+        end
 
-    endfor
+    end
     fclose (fid);
 
-endfor
+end
 
 
 
