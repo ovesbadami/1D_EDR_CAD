@@ -25,10 +25,10 @@ fid=fopen(FileName,'r');
 for i=1:num_of_lines
     txt = fgetl (fid);
     indexS = 1;
-%     IndexM = index(txt,":");
-%     IndexE = index(txt,";");
-    IndexM = strfind(txt,":");
-    IndexE = strfind(txt,";");
+     IndexM = index(txt,":");
+     IndexE = index(txt,";");
+##    IndexM = strfind(txt,":");
+##    IndexE = strfind(txt,";");
     
     if strcmp(txt(indexS:IndexM-1),"Temperature")
         Global_cons.TEMPERATURE = str2double(txt(IndexM+1:IndexE-1));
@@ -102,10 +102,10 @@ for i=1:1:Device_param.NoOfDomains
     for j=1:num_of_lines
         txt = fgetl (fid);
         indexS = 1;
-%         IndexM = index(txt,":");
-%         IndexE = index(txt,";");
-        IndexM = strfind(txt,":");
-        IndexE = strfind(txt,";");
+         IndexM = index(txt,":");
+         IndexE = index(txt,";");
+##        IndexM = strfind(txt,":");
+##        IndexE = strfind(txt,";");
         
         
         if strcmp(txt(indexS:IndexM-1),"effective_mass") % Confinement Masses

@@ -64,9 +64,6 @@ for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.M
             break;
         end
     end
-   WriteDataToFiles(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo)
-   Ninv = (sum(sum(n2D))*1E-4)/1E13
-%   CalculateEffectiveElectricField(Mesh_cons,Mesh,Silo)
    
    
 %    [GateCurrent] = GateLeakageCurrent(GateBias, Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
