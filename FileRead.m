@@ -4,6 +4,11 @@ function [Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant]=FileRe
 Sims_Constant.eQuantumCorrection = 0;
 Sims_Constant.hQuantumCorrection = 0;
 
+Global_cons.hbar = 1.05457e-34;
+Global_cons.Free_electron_mass = 9.108e-31;
+Global_cons.Boltzmann_cons = 1.38e-23;
+Global_cons.Electron_charge = 1.602e-19;
+Global_cons.Free_permittivity = 8.854e-12;
 
 FileName = strcat(Directory,'/','InputFile.txt')
 fid=fopen(FileName,'r');
@@ -24,24 +29,28 @@ fclose(fid);
 fid=fopen(FileName,'r');
 for i=1:num_of_lines
     txt = fgetl (fid);
+    if (txt == -1)
+      break
+    end
+    
     indexS = 1;
-     IndexM = index(txt,":");
-     IndexE = index(txt,";");
-##    IndexM = strfind(txt,":");
-##    IndexE = strfind(txt,";");
+%    IndexM = index(txt,":");
+%    IndexE = index(txt,";");
+    IndexM = strfind(txt,":");
+    IndexE = strfind(txt,";");
     
     if strcmp(txt(indexS:IndexM-1),"Temperature")
         Global_cons.TEMPERATURE = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"hbar")
-        Global_cons.hbar = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"FREE_ELECTRON_MASS")
-        Global_cons.Free_electron_mass = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"BOLTZMANN_CONSTANT")
-        Global_cons.Boltzmann_cons = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"ELECTRON_CHARGE")
-        Global_cons.Electron_charge = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"PERMITTIVITY")
-        Global_cons.Free_permittivity = str2double(txt(IndexM+1:IndexE-1));
+    %elseif strcmp(txt(indexS:IndexM-1),"hbar")
+    %    Global_cons.hbar = str2double(txt(IndexM+1:IndexE-1));
+    %elseif strcmp(txt(indexS:IndexM-1),"FREE_ELECTRON_MASS")
+    %    Global_cons.Free_electron_mass = str2double(txt(IndexM+1:IndexE-1));
+    %elseif strcmp(txt(indexS:IndexM-1),"BOLTZMANN_CONSTANT")
+    %    Global_cons.Boltzmann_cons = str2double(txt(IndexM+1:IndexE-1));
+    %elseif strcmp(txt(indexS:IndexM-1),"ELECTRON_CHARGE")
+    %    Global_cons.Electron_charge = str2double(txt(IndexM+1:IndexE-1));
+    %elseif strcmp(txt(indexS:IndexM-1),"PERMITTIVITY")
+    %    Global_cons.Free_permittivity = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"DAMPING")
         Sims_Constant.Damping = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"eQUANTUM_CORRECTION")
@@ -83,7 +92,8 @@ end
 fclose (fid);
 
 for i=1:1:Device_param.NoOfDomains
-
+    Material_cons.NonParabolicityFactor(i) = 0;
+    Material_cons.hNonParabolicityFactor(i) = 0;
     LocalFileName = strcat('Mat',num2str(i),'.txt');
     FileName = strcat(Directory,'/',LocalFileName)
     fid=fopen(FileName,'r');
@@ -101,11 +111,15 @@ for i=1:1:Device_param.NoOfDomains
     fid=fopen(FileName,'r');
     for j=1:num_of_lines
         txt = fgetl (fid);
+        if (txt == -1)
+          break
+        end
+        
         indexS = 1;
-         IndexM = index(txt,":");
-         IndexE = index(txt,";");
-##        IndexM = strfind(txt,":");
-##        IndexE = strfind(txt,";");
+%         IndexM = index(txt,":");
+%         IndexE = index(txt,";");
+        IndexM = strfind(txt,":");
+        IndexE = strfind(txt,";");
         
         
         if strcmp(txt(indexS:IndexM-1),"effective_mass") % Confinement Masses
@@ -133,6 +147,10 @@ for i=1:1:Device_param.NoOfDomains
             for k=1:Sims_Constant.NoOfValleys
                 Material_cons.mhDOS_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
             end
+        elseif strcmp(txt(indexS:IndexM-1),"nonparabolicity")
+            Material_cons.NonParabolicityFactor(i) = str2double(txt(IndexM+1:IndexE-1));
+        elseif strcmp(txt(indexS:IndexM-1),"hnonparabolicity")
+            Material_cons.hNonParabolicityFactor(i) = str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"bandgap")
             Material_cons.bandgap(i) = Global_cons.Electron_charge*str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"valley_degeneracy")

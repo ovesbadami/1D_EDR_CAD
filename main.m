@@ -24,7 +24,8 @@ v_ = zeros(1,Mesh.Number_Mesh_point);
 
 for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.MaxGateBias
     Silo.V(1) = GateBias+Device_param.WFDiff;
-    Silo.V(end) = Device_param.BackGateBias+Device_param.WFDiff;
+    Silo.V(end) = GateBias+Device_param.WFDiff;
+    % Silo.V(end) = Device_param.BackGateBias+Device_param.WFDiff;
 
     for iteration=1:1:1500
         [v_] = POISSON_SOLVER(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
@@ -57,7 +58,7 @@ for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.M
 
         if(ErrorV(iteration) < 0.001 && iteration > 5)
             if (Sims_Constant.eQuantumCorrection == 1)
-%                 Silo = EigenFunctionPostProcessing(Mesh_cons, Mesh,Sims_Constant,Silo);
+                Silo = EigenFunctionPostProcessing(Mesh_cons, Mesh,Sims_Constant,Silo);
                 [n_, p_, n2D, p2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
             end
             disp("Convegence Reached.\n")
@@ -65,8 +66,10 @@ for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.M
         end
     end
    
-   
+##   WriteDataToFiles(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo,GateBias)
 %    [GateCurrent] = GateLeakageCurrent(GateBias, Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
 %    printf("%e %e \n",0.5*sum(sum(n2D))*1E-4*(1E-13), sum(sum(GateCurrent.Ig))*1E-4);
 %    printf("%e %e \n",GateBias, GateCurrent.Ig_total*1E-4 )
 end
+
+##PrintTheLeftHandSideMatrixOfPoisson(Material_cons,Mesh_cons,Mesh)

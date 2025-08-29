@@ -71,18 +71,20 @@ if (Sims_Constant.eQuantumCorrection == 1)
   %plot(x, abs(Silo.hEigenVector(1,2,:)).^2, 'o','linewidth', 3); hold on;
   EV1(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,1,:);
   plot(x,EV1,'-','linewidth', 3);
-%   EV2(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,2,:);
-%   plot(x,EV2,'--','linewidth', 3);
-%   EV3(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,3,:);
-%   plot(x,EV3,'--','linewidth', 3);
+  EV2(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,2,:);
+  plot(x,EV2,'--','linewidth', 3);
+  EV3(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,3,:);
+  plot(x,EV3,'--','linewidth', 3);
 %   EV4(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,4,:);
 %   plot(x,EV4,'--','linewidth', 3);
 %   EV5(1:length(Silo.EigenVector(1,1,:)),1) = Silo.EigenVector(Valley,5,:);
 %   plot(x,EV5,'--','linewidth', 3);
 %   
-  
-  
-  
+ 
+dlmwrite("EV1.dat", [x' EV1], "delimiter", " ")  
+dlmwrite("EV2.dat", [x' EV2], "delimiter", " ")  
+dlmwrite("EV3.dat", [x' EV3], "delimiter", " ")  
+
  
 %   plot(x,Ec,'linewidth', 3);
   ylabel('Wave function [eV]')

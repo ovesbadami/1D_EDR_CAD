@@ -30,6 +30,7 @@ if (Sims_Constant.eQuantumCorrection == 0 && Sims_Constant.hQuantumCorrection ==
 elseif (Sims_Constant.eQuantumCorrection == 1 && Sims_Constant.hQuantumCorrection == 0)
 
     meff_DoS = zeros(Sims_Constant.NoOfValleys,1);
+    ElecNonParabolicity = 0.0;
     for i=1:1:Sims_Constant.NoOfValleys
         Counter = 0;
         for j = 1:1:Device_param.NoOfDomains
@@ -40,15 +41,46 @@ elseif (Sims_Constant.eQuantumCorrection == 1 && Sims_Constant.hQuantumCorrectio
         end
         meff_DoS(i,1) = meff_DoS(i,1)/Counter;
     end
-
-    for i=1:Sims_Constant.NoOfValleys
-        for j=1:Sims_Constant.NoOfEigEnePerValley
-            kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
-            % Here we are just considering the density of states effective mass and valley_degeneracy of material 2
-            NC2D = Material_cons.valley_degeneracy(i,2)*(meff_DoS(i,1)/(pi*Global_cons.hbar^2));
-            n2D(i,j) = NC2D*kBT*log(1+exp((Global_cons.Ef-Global_cons.Electron_charge*Silo.EigenEnergy(i,j))/kBT));
+    
+    Counter = 0;
+    for j = 1:1:Device_param.NoOfDomains
+        if (Material_cons.NonParabolicityFactor(j) > 0)
+            ElecNonParabolicity = ElecNonParabolicity + Material_cons.NonParabolicityFactor(j);
+            Counter = Counter + 1;
         end
     end
+    if (Counter > 0)
+        ElecNonParabolicity = ElecNonParabolicity/Counter;
+    else
+        ElecNonParabolicity = 0;
+    end
+        
+    if (ElecNonParabolicity == 0)
+        for i=1:Sims_Constant.NoOfValleys
+            for j=1:Sims_Constant.NoOfEigEnePerValley
+                kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
+                NC2D = Material_cons.valley_degeneracy(i,2)*(meff_DoS(i,1)/(pi*Global_cons.hbar^2));
+                n2D(i,j) = NC2D*kBT*log(1+exp((Global_cons.Ef-Global_cons.Electron_charge*Silo.EigenEnergy(i,j))/kBT));
+            end
+        end
+    else
+        % Implement Eq 3.99 of Esseni Book
+        kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
+        x = linspace(0, 100,  5000); % Normalized variable
+        num_Integrand = 1 + 2*ElecNonParabolicity*kBT/Global_cons.Electron_charge;
+        E_F = 0.0;
+        for i=1:Sims_Constant.NoOfValleys
+            DoS = (Material_cons.valley_degeneracy(i,2)*meff_DoS(i,1)*kBT)/(pi*Global_cons.hbar^2);
+            for j=1:Sims_Constant.NoOfEigEnePerValley
+                eta = (E_F - Global_cons.Electron_charge*Silo.EigenEnergy(i,j))/kBT;
+                den_Integrand = 1 + exp(x-eta);
+                integrand = num_Integrand./den_Integrand;
+                Integral = trapz(x, integrand);
+                n2D(i,j) = DoS*Integral;
+            end
+        end
+   
+   end
 
     for i=1:Mesh.Number_Mesh_point
         n_(i) = 0.0;
