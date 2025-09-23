@@ -3,6 +3,8 @@ function [Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant]=FileRe
 
 Sims_Constant.eQuantumCorrection = 0;
 Sims_Constant.hQuantumCorrection = 0;
+Sims_Constant.MaxIterations = 1000;
+Sims_Constant.OuputFileLocation = "./";
 
 Global_cons.hbar = 1.05457e-34;
 Global_cons.Free_electron_mass = 9.108e-31;
@@ -10,7 +12,7 @@ Global_cons.Boltzmann_cons = 1.38e-23;
 Global_cons.Electron_charge = 1.602e-19;
 Global_cons.Free_permittivity = 8.854e-12;
 
-FileName = strcat(Directory,'/','InputFile.txt')
+FileName = strcat(Directory,'/','InputFile.txt');
 fid=fopen(FileName,'r');
 
 fseek(fid, 0, 'eof');
@@ -51,8 +53,14 @@ for i=1:num_of_lines
     %    Global_cons.Electron_charge = str2double(txt(IndexM+1:IndexE-1));
     %elseif strcmp(txt(indexS:IndexM-1),"PERMITTIVITY")
     %    Global_cons.Free_permittivity = str2double(txt(IndexM+1:IndexE-1));
-    elseif strcmp(txt(indexS:IndexM-1),"DAMPING")
+   elseif strcmp(txt(indexS:IndexM-1),"OUTPUTFILE_LOCATION")
+        Sims_Constant.OuputFileLocation = txt(IndexM+1:IndexE-1);
+   elseif strcmp(txt(indexS:IndexM-1),"DAMPING")
         Sims_Constant.Damping = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"MAX_ITERATIONS")
+        Sims_Constant.MaxIterations = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"POISSON_TOL")
+        Sims_Constant.PoissonTol = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"eQUANTUM_CORRECTION")
         Sims_Constant.eQuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"hQUANTUM_CORRECTION")
@@ -63,13 +71,18 @@ for i=1:num_of_lines
         Sims_Constant.NoOfEigEnePerValley = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"MESH_SPATIAL_DISTANCE_m")
         Mesh_cons.Spatial_distance = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"SYMMETRIC_DOUBLE_GATE")
+        Device_param.Double_Gate_Symmetry = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"GATE_BIAS")
         temp = strsplit(txt(IndexM+1:IndexE-1));
         Device_param.MinGateBias = str2double(temp(1,1));
         Device_param.GateBiasStep = str2double(temp(1,2));
         Device_param.MaxGateBias = str2double(temp(1,3));
     elseif strcmp(txt(indexS:IndexM-1),"BACK_GATE_BIAS")
-        Device_param.BackGateBias = str2double(txt(IndexM+1:IndexE-1));
+        temp = strsplit(txt(IndexM+1:IndexE-1));
+        Device_param.MinBackGateBias = str2double(temp(1,1));
+        Device_param.BackGateBiasStep = str2double(temp(1,2));
+        Device_param.MaxBackGateBias = str2double(temp(1,3));    
     elseif strcmp(txt(indexS:IndexM-1),"WORKFUNCTION_DIFF")
         Device_param.WFDiff = str2double(txt(IndexM+1:IndexE-1));
 %    elseif strcmp(txt(indexS:IndexM-1),"L1_m")
@@ -95,7 +108,7 @@ for i=1:1:Device_param.NoOfDomains
     Material_cons.NonParabolicityFactor(i) = 0;
     Material_cons.hNonParabolicityFactor(i) = 0;
     LocalFileName = strcat('Mat',num2str(i),'.txt');
-    FileName = strcat(Directory,'/',LocalFileName)
+    FileName = strcat(Directory,'/',LocalFileName);
     fid=fopen(FileName,'r');
     %num_of_lines = fskipl(fid, Inf);
     
