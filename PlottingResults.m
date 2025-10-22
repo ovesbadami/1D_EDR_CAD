@@ -1,5 +1,5 @@
 clc
-% close all
+close all
 Valley = 1
 
 dx = Mesh_cons.Spatial_distance;
@@ -10,7 +10,6 @@ for i=1:1:Mesh.Number_Mesh_point
     Ev(i) = Ec(i) - Material_cons.bandgap(Index)/(1.6E-19);
     Ef(i) = 0.0;
 end
-
 
 grid on
 
@@ -81,9 +80,9 @@ if (Sims_Constant.eQuantumCorrection == 1)
 %   plot(x,EV5,'--','linewidth', 3);
 %   
  
-dlmwrite("EV1.dat", [x' EV1], "delimiter", " ")  
-dlmwrite("EV2.dat", [x' EV2], "delimiter", " ")  
-dlmwrite("EV3.dat", [x' EV3], "delimiter", " ")  
+% dlmwrite("EV1.dat", [x' EV1], "delimiter", " ")  
+% dlmwrite("EV2.dat", [x' EV2], "delimiter", " ")  
+% dlmwrite("EV3.dat", [x' EV3], "delimiter", " ")  
 
  
 %   plot(x,Ec,'linewidth', 3);

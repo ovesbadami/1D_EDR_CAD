@@ -41,7 +41,7 @@ for i=1:num_of_lines
     IndexM = strfind(txt,":");
     IndexE = strfind(txt,";");
     
-    if strcmp(txt(indexS:IndexM-1),"Temperature")
+    if strcmp(txt(indexS:IndexM-1),"TEMPERATURE")
         Global_cons.TEMPERATURE = str2double(txt(IndexM+1:IndexE-1));
     %elseif strcmp(txt(indexS:IndexM-1),"hbar")
     %    Global_cons.hbar = str2double(txt(IndexM+1:IndexE-1));
@@ -98,8 +98,6 @@ for i=1:num_of_lines
         for k = 1:1:Device_param.NoOfDomains
           Device_param.Region_(k) = str2double(temp(1,k+1));
         end
-    elseif strcmp(txt(indexS:IndexM-1),"material_type")
-        Device_param.MatType = txt(IndexM+1:IndexE-1);
     end
 end
 fclose (fid);
@@ -134,8 +132,13 @@ for i=1:1:Device_param.NoOfDomains
         IndexM = strfind(txt,":");
         IndexE = strfind(txt,";");
         
-        
-        if strcmp(txt(indexS:IndexM-1),"effective_mass") % Confinement Masses
+        if strcmp(txt(indexS:IndexM-1),"material_type")
+            if (strcmp(txt(IndexM+1:IndexE-1),'oxide'))  
+                Material_cons.MatType(i) ='o';
+            elseif (strcmp(txt(IndexM+1:IndexE-1), 'semiconductor'))  
+                Material_cons.MatType(i) ='s';
+            end
+        elseif strcmp(txt(indexS:IndexM-1),"effective_mass") % Confinement Masses
             temp = strsplit(txt(IndexM+1:IndexE-1));
             for k=1:Sims_Constant.NoOfValleys
                 Material_cons.effective_mass_(k,i) = Global_cons.Free_electron_mass*str2double(temp(1,k));
