@@ -10,31 +10,24 @@ if (year ~= "2025")
 end
 Directory='./';
 
-%[Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant] = GLOBAL_CONSTANT_INPUT();
-
 [Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant] = FileRead(Directory);
 
 Mesh=Make_mesh(Mesh_cons,Device_param);
 
 Silo=DataSilo(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant);
 
-n_ = zeros(1,Mesh.Number_Mesh_point);
-p_ = zeros(1,Mesh.Number_Mesh_point);
-v_ = zeros(1,Mesh.Number_Mesh_point);
-
-% Need to add initial guess and Workfunction Difference Calculations
-% Add the feature where the user enters the input 
-
 for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.MaxGateBias
-    Silo.V(1) = GateBias+Device_param.WFDiff;
+    Silo.V(1) = GateBias+Silo.BuiltinPotLeft+Device_param.WFDiff;
+    
     for BackGateBias = Device_param.MinBackGateBias:Device_param.BackGateBiasStep:Device_param.MaxBackGateBias
         fprintf("Gate Bias: %.3f V \n",GateBias);
         fprintf("Back Gate Bias: %.3f V\n",BackGateBias);
 
-        Silo.V(end) = BackGateBias+Device_param.WFDiff;
+        Silo.V(end) = BackGateBias+Silo.BuiltinPotRight+Device_param.WFDiff;
         if (strcmp(Device_param.Double_Gate_Symmetry,"YES") && GateBias ~= BackGateBias)
             continue
         end
+        
     fprintf("Iteration    ErrorV    ErrorN    ErrorP\n");
 
     for iteration=1:1:Sims_Constant.MaxIterations
@@ -88,7 +81,7 @@ for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.M
         end
     end
     end
-    WriteDataToFiles(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo,GateBias)
+    WriteDataToFiles(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo,GateBias, BackGateBias)
 %    [GateCurrent] = GateLeakageCurrent(GateBias, Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
 %    printf("%e %e \n",0.5*sum(sum(n2D))*1E-4*(1E-13), sum(sum(GateCurrent.Ig))*1E-4);
 %    printf("%e %e \n",GateBias, GateCurrent.Ig_total*1E-4 )
