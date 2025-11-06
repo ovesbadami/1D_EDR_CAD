@@ -102,23 +102,23 @@ file2_tooltips = {
 # Default Values for Input files
 # --------------------------------------
 file1_defaults = {
-    "EXECUTABLE_PATH":"/home/kash/Desktop/1D_EDR_CAD-main/",
-    "OUTPUTFILE_LOCATION": "/home/kash/Desktop/1D_EDR_CAD-main/Results/",
+    "EXECUTABLE_PATH":"/home/kash/1D_EDR_CAD/Executable/",
+    "OUTPUTFILE_LOCATION": "/home/kash/1D_EDR_CAD/Results/",
     "TEMPERATURE": "300",
     "eQUANTUM_CORRECTION": "0",
     "hQUANTUM_CORRECTION": "0",
     "NO_OF_VALLEYS": "1",
     "NO_EIGEN_PER_VALLEY": "5",
-    "MESH_SPATIAL_DISTANCE_m": "0.25e-9",
-    "NO_OF_DOMAINS": "3 2.0e-09 10.0e-09 2.0e-09",
+    "MESH_SPATIAL_DISTANCE_m": "0.5e-9",
+    "NO_OF_DOMAINS": "2 10.0e-09 1000.0e-09",
     "DAMPING": "0.1",
     "POISSON_TOL": "1E-3",
     "MAX_ITERATIONS": "1500",
     "SYMMETRIC_DOUBLE_GATE": "YES",
     "GATE_BIAS": "0 0.1 0",
     "BACK_GATE_BIAS": "0 0.1 0",
-    "WORKFUNCTION_DIFF": "-0.9942",
-    "MATLAB_RUNTIME": "/home/kash/MATLAB"
+    "WORKFUNCTION_DIFF": "0",
+    "MATLAB_RUNTIME": "/usr/local/MATLAB/MATLAB_Runtime/v98"
 }
 
 # --------------------------------------
@@ -137,7 +137,7 @@ file2_defaults = {
     "mhDOS": "0",
     "permittivity": "3.9",
     "bandgap": "8.0",
-    "deltaEc": "5.0",
+    "deltaEc": "3.1",
     "Doping_NA": "0.0",
     "Doping_ND": "0.0"
 }
@@ -192,7 +192,7 @@ def open_MaterialFile_window(OutputFileLocation):
     row = 0
     for key, val in file2_defaults.items():
         tk.Label(file2_window, text=key).grid(row=row, column=0, sticky="w", padx=5, pady=3)
-        entry = tk.Entry(file2_window, width=40)
+        entry = tk.Entry(file2_window, width=30)
         entry.insert(0, val)
         entry.grid(row=row, column=1, padx=5, pady=3)
         entries[key] = entry
