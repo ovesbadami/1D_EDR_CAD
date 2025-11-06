@@ -17,15 +17,21 @@ Mesh=Make_mesh(Mesh_cons,Device_param);
 Silo=DataSilo(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant);
 
 for GateBias = Device_param.MinGateBias:Device_param.GateBiasStep:Device_param.MaxGateBias
-    Silo.V(1) = GateBias+Silo.BuiltinPotLeft+Device_param.WFDiff;
+    Silo.V(1) = GateBias+Silo.BuiltinPotLeft-Device_param.WFDiff;
     
     for BackGateBias = Device_param.MinBackGateBias:Device_param.BackGateBiasStep:Device_param.MaxBackGateBias
         fprintf("Gate Bias: %.3f V \n",GateBias);
         fprintf("Back Gate Bias: %.3f V\n",BackGateBias);
 
-        Silo.V(end) = BackGateBias+Silo.BuiltinPotRight+Device_param.WFDiff;
+        Silo.V(end) = BackGateBias+Silo.BuiltinPotRight-Device_param.WFDiff;
         if (strcmp(Device_param.Double_Gate_Symmetry,"YES") && GateBias ~= BackGateBias)
             continue
+        end
+        
+        if (Material_cons.MatType(Mesh.Material(Mesh.Number_Mesh_point)) == 's')
+            Silo.V(end) = Silo.BuiltinPotRight;
+            
+            fprintf("\tResetting the backgate bias to zero as there is no backgate\n");
         end
         
     fprintf("Iteration    ErrorV    ErrorN    ErrorP\n");
