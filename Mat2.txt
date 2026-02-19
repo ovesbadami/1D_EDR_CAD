@@ -1,7 +1,7 @@
 material_type:semiconductor;
 
-effective_mass:0.1 0.1 0.1;
-meDOS:0.57 0.57 0.57;
+effective_mass:0.1 0.21 0.21;
+meDOS:0.57 0.4 0.4;
 valley_degeneracy:2 2 2;
 
 hole_effective_mass:0.2 0.2 0.2;
