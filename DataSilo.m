@@ -57,7 +57,7 @@ if (Material_cons.MatType(Mesh.Material(Mesh.Number_Mesh_point)) == 'o')
             break
         end
     end
-elseif (Material_cons.MatType(Mesh.Number_Mesh_point) == 's')
+elseif (Material_cons.MatType(Mesh.Material(Mesh.Number_Mesh_point)) == 's')
     MatIndex=Mesh.Material(Mesh.Number_Mesh_point); 
 else
     disp('Incorrect material type')

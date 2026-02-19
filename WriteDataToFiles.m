@@ -23,6 +23,8 @@ FileName = strcat(Sims_Constant.OuputFileLocation,strcat("Bands_",num2str(GateBi
 dlmwrite (FileName, [Ec Ev])
 FileName = strcat(Sims_Constant.OuputFileLocation,strcat("ElectronConc_",num2str(GateBias), "_", num2str(BackGateBias),".dat"));
 dlmwrite (FileName, Silo.n')
+FileName = strcat(Sims_Constant.OuputFileLocation,strcat("HoleConc_",num2str(GateBias), "_", num2str(BackGateBias),".dat"));
+dlmwrite (FileName, Silo.p')
 FileName = strcat(Sims_Constant.OuputFileLocation,strcat("ElectronEigenEnergy_",num2str(GateBias), "_", num2str(BackGateBias),".dat"));
 dlmwrite (FileName, Silo.EigenEnergy')
 FileName = strcat(Sims_Constant.OuputFileLocation,strcat("HoleEigenEnergy_",num2str(GateBias), "_", num2str(BackGateBias),".dat"));

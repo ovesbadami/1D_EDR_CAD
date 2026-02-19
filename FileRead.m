@@ -11,6 +11,8 @@ Global_cons.Free_electron_mass = 9.108e-31;
 Global_cons.Boltzmann_cons = 1.38e-23;
 Global_cons.Electron_charge = 1.602e-19;
 Global_cons.Free_permittivity = 8.854e-12;
+Global_cons.TEMPERATURE = 300;
+Sims_Constant.PoissonTol = 0.5E-3;
 
 FileName = strcat(Directory,'/','InputFile.txt');
 fid=fopen(FileName,'r');
@@ -72,7 +74,7 @@ for i=1:num_of_lines
     elseif strcmp(txt(indexS:IndexM-1),"MESH_SPATIAL_DISTANCE_m")
         Mesh_cons.Spatial_distance = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"SYMMETRIC_DOUBLE_GATE")
-        Device_param.Double_Gate_Symmetry = str2double(txt(IndexM+1:IndexE-1));
+        Device_param.Double_Gate_Symmetry = txt(IndexM+1:IndexE-1);
     elseif strcmp(txt(indexS:IndexM-1),"GATE_BIAS")
         temp = strsplit(txt(IndexM+1:IndexE-1));
         Device_param.MinGateBias = str2double(temp(1,1));
