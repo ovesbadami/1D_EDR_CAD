@@ -40,7 +40,7 @@ end
 NetDoping = Material_cons.ND_(MatIndex)-Material_cons.NA_(MatIndex);
 if (NetDoping > 0)
     NC3D = 2*((Material_cons.meDOS_(1,Mesh.Material(index))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-    EcMinusEf = kBT_q*log(abs(NetDoping)/NC3D);
+    EcMinusEf = -kBT_q*log(abs(NetDoping)/NC3D);
 elseif (NetDoping < 0)
     NV3D = 2*((Material_cons.mhDOS_(1,Mesh.Material(index))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
     EcMinusEf = Material_cons.bandgap(MatIndex)/Global_cons.Electron_charge+kBT_q*log(abs(NetDoping)/NV3D);
@@ -67,7 +67,7 @@ end
 NetDoping = Material_cons.ND_(MatIndex)-Material_cons.NA_(MatIndex);
 if (NetDoping > 0)
     NC3D = 2*((Material_cons.meDOS_(1,Mesh.Material(index))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-    EcMinusEf = kBT_q*log(abs(NetDoping)/NC3D);
+    EcMinusEf = -kBT_q*log(abs(NetDoping)/NC3D);
 elseif (NetDoping < 0)
     NV3D = 2*((Material_cons.mhDOS_(1,Mesh.Material(index))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
     EcMinusEf = Material_cons.bandgap(MatIndex)/Global_cons.Electron_charge+kBT_q*log(abs(NetDoping)/NV3D);
