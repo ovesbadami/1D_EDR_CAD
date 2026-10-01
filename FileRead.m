@@ -5,14 +5,13 @@ Sims_Constant.eQuantumCorrection = 0;
 Sims_Constant.hQuantumCorrection = 0;
 Sims_Constant.MaxIterations = 1000;
 Sims_Constant.OuputFileLocation = "./";
-
+Sims_Constant.InitialPotentialFile = "None";
+Sims_Constant.MODE = "SelfConsistent";
 Global_cons.hbar = 1.05457e-34;
 Global_cons.Free_electron_mass = 9.108e-31;
 Global_cons.Boltzmann_cons = 1.38e-23;
 Global_cons.Electron_charge = 1.602e-19;
 Global_cons.Free_permittivity = 8.854e-12;
-Global_cons.TEMPERATURE = 300;
-Sims_Constant.PoissonTol = 0.5E-3;
 
 FileName = strcat(Directory,'/','InputFile.txt');
 fid=fopen(FileName,'r');
@@ -25,7 +24,6 @@ data = fread(fid, fileSize, 'uint8');
 %# Count number of line-feeds and increase by one.
 num_of_lines = sum(data == 10) + 1;
 fclose(fid);
-
 
 %num_of_lines = fskipl(fid, Inf);
 %fclose (fid);
@@ -45,6 +43,10 @@ for i=1:num_of_lines
     
     if strcmp(txt(indexS:IndexM-1),"TEMPERATURE")
         Global_cons.TEMPERATURE = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"MODE")
+        Sims_Constant.MODE = txt(IndexM+1:IndexE-1);
+    elseif strcmp(txt(indexS:IndexM-1),"READ_FROM_FILE")
+        Sims_Constant.InitialPotentialFile=txt(IndexM+1:IndexE-1);
     %elseif strcmp(txt(indexS:IndexM-1),"hbar")
     %    Global_cons.hbar = str2double(txt(IndexM+1:IndexE-1));
     %elseif strcmp(txt(indexS:IndexM-1),"FREE_ELECTRON_MASS")
@@ -74,7 +76,7 @@ for i=1:num_of_lines
     elseif strcmp(txt(indexS:IndexM-1),"MESH_SPATIAL_DISTANCE_m")
         Mesh_cons.Spatial_distance = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"SYMMETRIC_DOUBLE_GATE")
-        Device_param.Double_Gate_Symmetry = txt(IndexM+1:IndexE-1);
+        Device_param.Double_Gate_Symmetry = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"GATE_BIAS")
         temp = strsplit(txt(IndexM+1:IndexE-1));
         Device_param.MinGateBias = str2double(temp(1,1));
@@ -101,6 +103,8 @@ for i=1:num_of_lines
           Device_param.Region_(k) = str2double(temp(1,k+1));
         end
     end
+
+
 end
 fclose (fid);
 

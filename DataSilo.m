@@ -89,5 +89,38 @@ for i=1:1:Sims_Constant.NoOfValleys
         end
     end
 end
-   
+
+% If we get initial guess from the user. 
+if (Sims_Constant.InitialPotentialFile ~= "None")
+    n2D = 0;
+    p2D = 0;
+    fid=fopen(Sims_Constant.InitialPotentialFile,'r');
+    if (fid == -1)
+        error("Unable to locate the Inital Potential File. Please check the path and file \n")
+    end
+    fseek(fid, 0, 'eof');
+    fileSize = ftell(fid);
+    frewind(fid);
+    %# Read the whole file.
+    data = fread(fid, fileSize, 'uint8');
+    %# Count number of line-feeds and increase by one.
+    num_of_lines = sum(data == 10);
+    fclose(fid);
+    if (num_of_lines ~= Mesh.Number_Mesh_point)
+        fprintf('Mismatch in electrostatic potential initial guess datapoints. Please check the initial guess file');
+        exit();
+    end
+    fprintf('Assuming that the electrostatic potentials are ordered in the nodes i.e. line number is same as the node index');
+
+    fid=fopen(Sims_Constant.InitialPotentialFile,'r');
+    for i=1:num_of_lines
+        txt = fgetl (fid);
+        Silo.V(i) = str2double(txt);
+    end
+    fclose(fid);
+    [Silo.n, Silo.p, n2D, p2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
+
+end
+
+
 end
