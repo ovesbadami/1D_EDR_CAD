@@ -1,6 +1,6 @@
 clc
 close all
-Valley = 1
+Valley = 1;
 
 dx = Mesh_cons.Spatial_distance;
 x = dx*(1:1:Mesh.Number_Mesh_point)*(1E+9);
@@ -13,9 +13,8 @@ end
 
 grid on
 
-
 figure(1)
-plot(x,Silo.n,'-','linewidth', 3)
+plot(x,Silo.n,'o-','linewidth', 3)
 ylabel('Electron Concentration [m^{-3}]')
 xlabel('Position [nm]')
 %axis ("tic", "tight");

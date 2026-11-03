@@ -1,18 +1,13 @@
-function [v_] = POISSON_SOLVER(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo)
+function [v_] = POISSON_SOLVER(Global_cons,Material_cons,Mesh_cons,Mesh,Sims_Constant,Silo)
 
 to=1./(Mesh_cons.Spatial_distance.^2);
 v_ = Silo.V;
 
 for i=1:Mesh.Number_Mesh_point
     Index=Mesh.Material(i);
-%    if (Mesh.Material(i)>1&&Mesh.Material(i)<3)
-        kBT=(Global_cons.Boltzmann_cons*Global_cons.TEMPERATURE);
-        rho(i)=Global_cons.Electron_charge*(Material_cons.ND_(Index)-Material_cons.NA_(Index)+Silo.p(i)-Silo.n(i));
-        drho(i)=-(Global_cons.Electron_charge/kBT)*Global_cons.Electron_charge*(Silo.p(i)+Silo.n(i)); 
-%    else
-%        rho(i)=0;
-%        drho(i)=0;
-%    end
+    kBT=(Global_cons.Boltzmann_cons*Global_cons.TEMPERATURE);
+    rho(i)=Global_cons.Electron_charge*(Material_cons.ND_(Index)-Material_cons.NA_(Index)+Silo.p(i)-Silo.n(i)+Material_cons.FixedChargeDensity(Index));
+    drho(i)=-(Global_cons.Electron_charge/kBT)*Global_cons.Electron_charge*(Silo.p(i)+Silo.n(i)); 
 end
 
 Jacobian_MATRIX=zeros(Mesh.Number_Mesh_point);

@@ -44,7 +44,7 @@ elseif (Sims_Constant.MODE == "SelfConsistent")
         fprintf("Iteration    ErrorV    ErrorN    ErrorP\n");
     
         for iteration=1:1:Sims_Constant.MaxIterations
-            [v_] = POISSON_SOLVER(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
+            [v_] = POISSON_SOLVER(Global_cons,Material_cons,Mesh_cons,Mesh,Sims_Constant,Silo);
             
             ErrorV(iteration) = max(abs(Silo.V-v_))/Sims_Constant.Damping;
             Silo.V = v_;
@@ -55,8 +55,10 @@ elseif (Sims_Constant.MODE == "SelfConsistent")
                 Ec = Ec;
                 Silo.EigenEnergy = Sort_Eigen_Energies;
                 Silo.EigenVector = Sort_Eigen_Vectors;
+            elseif (Sims_Constant.eQuantumCorrection == 2)
+                Factor = IMLDA(Global_cons, Sims_Constant, Material_cons, Mesh);
+                Silo.QCorrMultFactor = Factor;
             end
-            
             if (Sims_Constant.hQuantumCorrection == 1)
                 CarrierType = 'hole';
                 [Sort_Eigen_Energies,Sort_Eigen_Vectors, Ev]=SCHRODINGER_EQUATION_SOLVE(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo, CarrierType);
@@ -65,11 +67,9 @@ elseif (Sims_Constant.MODE == "SelfConsistent")
                 Silo.hEigenVector = Sort_Eigen_Vectors;
             end
     
+            
             [n_, p_, n2D, p2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
-            Silo.p = p_;
-            Silo.n = n_;
-    
-            % [QuantumCorrection, n_, p_] = IMLDA(Global_cons,Material_cons,Mesh_cons,Device_param,Mesh,Sims_Constant,Silo);
+            
             
             if (max(abs((Silo.n-n_))) == 0 || max(abs(n_)) == 0 )
                 ErrorN(iteration) = 0;

@@ -7,6 +7,7 @@ for index=1:Mesh.Number_Mesh_point
 end
   
 for index=1:Mesh.Number_Mesh_point
+    Silo.QCorrMultFactor(index) = 1.1;
     MatIndex=Mesh.Material(index);
     if (Material_cons.ND_(MatIndex) > Material_cons.NA_(MatIndex))
         Silo.n(index)=Material_cons.ND_(MatIndex);

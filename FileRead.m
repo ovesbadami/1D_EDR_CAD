@@ -3,6 +3,8 @@ function [Global_cons,Material_cons,Mesh_cons,Device_param,Sims_Constant]=FileRe
 
 Sims_Constant.eQuantumCorrection = 0;
 Sims_Constant.hQuantumCorrection = 0;
+Sims_Constant.NoOfValleys = 1;
+Sims_Constant.NoOfEigEnePerValley = 1;
 Sims_Constant.MaxIterations = 1000;
 Sims_Constant.OuputFileLocation = "./";
 Sims_Constant.InitialPotentialFile = "None";
@@ -35,6 +37,10 @@ for i=1:num_of_lines
       break
     end
     
+    if (txt(1:2) == '//')
+      continue
+    end
+
     indexS = 1;
 %    IndexM = index(txt,":");
 %    IndexE = index(txt,";");
@@ -47,16 +53,6 @@ for i=1:num_of_lines
         Sims_Constant.MODE = txt(IndexM+1:IndexE-1);
     elseif strcmp(txt(indexS:IndexM-1),"READ_FROM_FILE")
         Sims_Constant.InitialPotentialFile=txt(IndexM+1:IndexE-1);
-    %elseif strcmp(txt(indexS:IndexM-1),"hbar")
-    %    Global_cons.hbar = str2double(txt(IndexM+1:IndexE-1));
-    %elseif strcmp(txt(indexS:IndexM-1),"FREE_ELECTRON_MASS")
-    %    Global_cons.Free_electron_mass = str2double(txt(IndexM+1:IndexE-1));
-    %elseif strcmp(txt(indexS:IndexM-1),"BOLTZMANN_CONSTANT")
-    %    Global_cons.Boltzmann_cons = str2double(txt(IndexM+1:IndexE-1));
-    %elseif strcmp(txt(indexS:IndexM-1),"ELECTRON_CHARGE")
-    %    Global_cons.Electron_charge = str2double(txt(IndexM+1:IndexE-1));
-    %elseif strcmp(txt(indexS:IndexM-1),"PERMITTIVITY")
-    %    Global_cons.Free_permittivity = str2double(txt(IndexM+1:IndexE-1));
    elseif strcmp(txt(indexS:IndexM-1),"OUTPUTFILE_LOCATION")
         Sims_Constant.OuputFileLocation = txt(IndexM+1:IndexE-1);
    elseif strcmp(txt(indexS:IndexM-1),"DAMPING")
@@ -69,6 +65,10 @@ for i=1:num_of_lines
         Sims_Constant.eQuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"hQUANTUM_CORRECTION")
         Sims_Constant.hQuantumCorrection = str2double(txt(IndexM+1:IndexE-1));
+    elseif strcmp(txt(indexS:IndexM-1),"MLDA_eCONF_MASSES")
+        temp = strsplit(txt(IndexM+1:IndexE-1));
+        Sims_Constant.MLDAeConfMass(1)= str2double(temp(1,1));
+        Sims_Constant.MLDAeConfMass(2)= str2double(temp(1,2));
     elseif strcmp(txt(indexS:IndexM-1),"NO_OF_VALLEYS")
         Sims_Constant.NoOfValleys = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_EIGEN_PER_VALLEY")
@@ -89,12 +89,6 @@ for i=1:num_of_lines
         Device_param.MaxBackGateBias = str2double(temp(1,3));    
     elseif strcmp(txt(indexS:IndexM-1),"WORKFUNCTION_DIFF")
         Device_param.WFDiff = str2double(txt(IndexM+1:IndexE-1));
-%    elseif strcmp(txt(indexS:IndexM-1),"L1_m")
-%        Device_param.Region_(1) = str2double(txt(IndexM+1:IndexE-1));
-%    elseif strcmp(txt(indexS:IndexM-1),"L2_m")
-%        Device_param.Region_(2) = str2double(txt(IndexM+1:IndexE-1));
-%    elseif strcmp(txt(indexS:IndexM-1),"L3_m")
-%        Device_param.Region_(3) = str2double(txt(IndexM+1:IndexE-1));
     elseif strcmp(txt(indexS:IndexM-1),"NO_OF_DOMAINS")
         temp = strsplit(txt(IndexM+1:IndexE-1));
         Device_param.NoOfDomains = str2double(temp(1,1));
@@ -108,9 +102,13 @@ for i=1:num_of_lines
 end
 fclose (fid);
 
+
+
+
 for i=1:1:Device_param.NoOfDomains
     Material_cons.NonParabolicityFactor(i) = 0;
     Material_cons.hNonParabolicityFactor(i) = 0;
+    Material_cons.FixedChargeDensity(i) = 0.0;
     LocalFileName = strcat('Mat',num2str(i),'.txt');
     FileName = strcat(Directory,'/',LocalFileName);
     fid=fopen(FileName,'r');
@@ -131,7 +129,11 @@ for i=1:1:Device_param.NoOfDomains
         if (txt == -1)
           break
         end
-        
+
+        if (txt(1:2) == '//')
+            continue
+        end
+
         indexS = 1;
 %         IndexM = index(txt,":");
 %         IndexE = index(txt,";");
@@ -189,6 +191,8 @@ for i=1:1:Device_param.NoOfDomains
                 Material_cons.NA_(i) = str2double(txt(IndexM+1:IndexE-1));
         elseif strcmp(txt(indexS:IndexM-1),"Doping_ND")
                 Material_cons.ND_(i) = str2double(txt(IndexM+1:IndexE-1));
+        elseif strcmp(txt(indexS:IndexM-1),"FixedChargeDensity")
+                Material_cons.FixedChargeDensity(i) = str2double(txt(IndexM+1:IndexE-1));
         end
 
     end

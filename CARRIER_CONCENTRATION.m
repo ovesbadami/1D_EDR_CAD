@@ -4,26 +4,26 @@ function [n_, p_, n2D, p2D] = CARRIER_CONCENTRATION(Global_cons,Material_cons,Me
 v_ = Silo.V;
 to=1./(Mesh_cons.Spatial_distance.^2);
 
-if (Sims_Constant.eQuantumCorrection == 0 && Sims_Constant.hQuantumCorrection == 0)
+if ((Sims_Constant.eQuantumCorrection == 0 && Sims_Constant.hQuantumCorrection == 0) || ... 
+    (Sims_Constant.eQuantumCorrection == 2 && Sims_Constant.hQuantumCorrection == 0)    )
     for i=1:Mesh.Number_Mesh_point
         Index=Mesh.Material(i);
 
-       % if (Mesh.Material(i)>1 && Mesh.Material(i)<3)
-            kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
-            Ec = -Global_cons.Electron_charge*v_(i) + Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
-            Ev = Ec - Material_cons.bandgap(Index);
-            NC3D = 2*((Material_cons.meDOS_(1,Mesh.Material(i))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-            NV3D = 2*((Material_cons.mhDOS_(1,Mesh.Material(i))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
-            if (NC3D == 0)
-                n_(i) = 0;
-            else
-                n_(i)=NC3D*(exp(-(Ec-Global_cons.Ef)/kBT));
-            end
-            if (NV3D == 0)
-                p_(i) = 0;
-            else
-                p_(i)=NV3D*(exp(-(Global_cons.Ef-Ev)/kBT));
-            end
+        kBT=(Global_cons.Boltzmann_cons.*Global_cons.TEMPERATURE);
+        Ec = -Global_cons.Electron_charge*v_(i) + Global_cons.Electron_charge*Material_cons.delta_Ec_(Index);
+        Ev = Ec - Material_cons.bandgap(Index);
+        NC3D = 2*((Material_cons.meDOS_(1,Mesh.Material(i))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
+        NV3D = 2*((Material_cons.mhDOS_(1,Mesh.Material(i))/(2*pi*Global_cons.hbar^2))^1.5) *(kBT^1.5);
+        if (NC3D == 0)
+            n_(i) = 0;
+        else
+            n_(i)=NC3D*(exp(-(Ec-Global_cons.Ef)/kBT))*Silo.QCorrMultFactor(i);
+        end
+        if (NV3D == 0)
+            p_(i) = 0;
+        else
+            p_(i)=NV3D*(exp(-(Global_cons.Ef-Ev)/kBT));
+        end
     end
     n2D = 0;
     p2D = 0;
